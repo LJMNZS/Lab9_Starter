@@ -210,7 +210,6 @@
       }
     }
     function errorsEval(op1, op2) {
-      //return Number.isInteger(parseInt(op1));
       if (! (Number.isInteger(parseFloat(op1)) && Number.isInteger(parseFloat(op2)))) {
         throw new EvalError("both args were not ints!");
       }
