@@ -69,25 +69,33 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="groupstart">Console Group Start</button>
+      <button id="groupend">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="timerstart">Start Timer</button>
+      <button id="timerend">End Timer</button>
+      <button id="console">Console Trace</button>
+      <button id="global">Trigger a Global Error</button>
     </section>
   </main>
+             
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({
+        token: "4d2390ffcf494564baed6b90e060a0dd"
+    });
+  </script>
 
   <script>
+    TrackJS.track('Testing TrackJS!');
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +103,118 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
+      try {
+        errorsEval(firstNum, secondNum);
+      } catch(err) {
+        console.log("One of the args were not ints");
+      } finally {
+        console.log("End of try-catch-finally block");
+      }
+      //errorsEval(firstNum, secondNum);
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    const label = "Beginning of group label";
+    
+    errorBtns[0].addEventListener('click', function() {
+      console.log("Something was logged!");
+    });
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    errorBtns[1].addEventListener('click', function() {
+      console.error("Error logged to console");
+    });
+
+    errorBtns[2].addEventListener('click', function() {
+      console.count("Console count");
+    });
+
+    errorBtns[3].addEventListener('click', function() {
+      console.warn("Console warning");
+    });
+
+    errorBtns[4].addEventListener('click', function() {
+      const x = 10;
+      const y = 8;
+      const assertion = 'x is supposed to be equal to y';
+      console.assert(x == y, {x, y, assertion});
+    });
+
+    errorBtns[5].addEventListener('click', function() {
+      console.clear();
+    });
+
+    errorBtns[6].addEventListener('click', function() {
+      console.dir(errorBtns[6]);
+    });
+
+    errorBtns[7].addEventListener('click', function() {
+      console.dirxml(errorBtns[7]);
+    });
+
+    errorBtns[8].addEventListener('click', function() {
+      console.group(label);
+    });
+
+    errorBtns[9].addEventListener('click', function() {
+      console.groupEnd(label);
+    });
+
+    errorBtns[10].addEventListener('click', function() {
+      console.table([
+        {
+          class: 'CSE 110',
+          title: 'Software Engineering',
+        },
+        {
+          class: 'CSE 130',
+          title: 'Programming Languages',
+        },
+        {
+          class: 'CSE 158',
+          title: 'Recommender Systems',
+        },
+        {
+          class: 'ECE 111',
+          title: 'Advanced Digital Design Project',
+        }
+      ]);
+    });
+
+    errorBtns[11].addEventListener('click', function() {
+      console.time();
+      console.log("Timer started");
+    });
+
+    errorBtns[12].addEventListener('click', function() {
+      console.timeEnd();
+    });
+
+    errorBtns[13].addEventListener('click', function() {
+      console.trace();
+    });
+
+    errorBtns[14].addEventListener('click', function() {
+      console.log(err);
+    });
+
+    window.addEventListener('error', function(event) {
+      console.log("Global error detected!");
+    });
+
+
+    class EvalError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "EvalError";
+      }
+    }
+    function errorsEval(op1, op2) {
+      //return Number.isInteger(parseInt(op1));
+      if (! (Number.isInteger(parseFloat(op1)) && Number.isInteger(parseFloat(op2)))) {
+        throw new EvalError("both args were not ints!");
+      }
+    }
   </script>
 </body>
 
